@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VINCheckerTest {
+
     @Test
     void checkMark(){
         String VIN1 = "1HGC42254WA015540"; //wrong check sum
@@ -14,10 +15,11 @@ class VINCheckerTest {
         assertTrue(stCheck2);
 
     }
+
     @Test
     void checkSignVIN(){
         VINChecker vinChecker = new VINChecker();
-        String VIN = "1HGC42254WA015540";
+        String VIN = "WD2YD241825356884";
         Character expected = vinChecker.calculateSignFromVin(VIN);
         Character actual = VIN.charAt(8);
         assertEquals(expected,actual);
@@ -38,4 +40,15 @@ class VINCheckerTest {
         String actual = "Германия";
         assertEquals(expected,actual);
     }
+
+    @Test
+    void getVINModelYear(){
+        VINChecker vinChecker = new VINChecker();
+        vinChecker.checkVIN("WD2YD241825356884");
+        Integer expected = vinChecker.getVINYear();
+        System.out.print(expected);
+        Integer actual = 2002;
+        assertEquals(expected,actual);
+    }
+
 }

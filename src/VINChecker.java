@@ -6,9 +6,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ *
+ * @author Walentin
+ */
 public class VINChecker {
     private static final int VIN_LENGTH = 17;
     private HashMap<String,String> countries = new HashMap<>();
+    private HashMap<Character,Integer> years = new HashMap<>();
     private static Pattern pattern;
     private static final String VIN_REGEXP="^(?<wmi>[a-z1-9&&[^oiq]]{1}[a-z0-9&&[^oiq]]{2})" +
             "(?<vds>[a-z0-9&&[^oiq]]{5})" +
@@ -30,6 +35,19 @@ public class VINChecker {
     }
 
     private void fillYearDictionary() {
+        int year = 1980;
+        for (int i = 65; i <= 89; ++i)  // A..Z
+        {
+            if (i == 81 || i == 79 || i == 73 || i == 85)
+                continue;
+            years.put((char)i, year);
+            ++year;
+        }
+        for (int i = 49; i <= 57; ++i)  // 0..9
+        {
+            years.put((char)i, year);
+            ++year;
+        }
 
     }
 
@@ -115,7 +133,13 @@ public class VINChecker {
         return null;
     }
 
-    String getVINYear(String vin){
+    Integer getVINYear(){
+        Character modelYear = this.modelYear.charAt(0);
+        for (Map.Entry<Character,Integer> entry : years.entrySet()){
+            if (modelYear == entry.getKey()){
+                return entry.getValue();
+            }
+        }
         return null;
     }
     private String replaceChars(String string, Map<Character,Integer> replacesMap){
@@ -145,9 +169,10 @@ public class VINChecker {
         String replacedStr = replaceChars(vin,replacesMap);
 
         int check = calculateCheck(replacedStr);
+        char checkChar;
+        if (check == 10) checkChar = 'X';
+        else checkChar = Character.forDigit(check,10);
 
-        char checkChar = Character.forDigit(check,10);
-        if (checkChar == '\u0000') return 'X';
         return checkChar;
     }
 
